@@ -3,3 +3,9 @@ spring:
     url: jdbc:postgresql://localhost:5433/market
     username: postgres
     password: postgres
+# http://localhost:8989/market-for/swagger-ui
+# http://localhost:8989/market-for/v3/api-docs
+server:
+  port: 8989
+  servlet:
+    context-path: /market-for
