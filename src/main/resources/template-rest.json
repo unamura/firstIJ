@@ -1,7 +1,16 @@
-{
-  "email": "manuel.murari@gmail.com",
-  "firstName": "Manuel",
-  "lastName": "Murari",
-  "username": "manumura",
-  "password": "Parola6!"
-}
+[
+  {
+    "email": "murararum@gmail.com",
+    "firstName": "Manuel",
+    "lastName": "Murari",
+    "username": "manumura",
+    "password": "Parola6!"
+  },
+  {
+    "email": "murararum@gmail.com",
+    "firstName": "Manuel",
+    "lastName": "Murari",
+    "password": "password",
+    "username": "manumura"
+  }
+]

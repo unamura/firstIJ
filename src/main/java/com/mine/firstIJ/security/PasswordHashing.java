@@ -7,7 +7,11 @@ import static com.kosprov.jargon2.api.Jargon2.*;
 
 public class PasswordHashing {
 
-    public String encodePassword(String userPassword) {
+    public String encryptPassword(String userPassword) {
+        if (!isValidString(userPassword)) {
+            throw new IllegalArgumentException("Password deve essere lunga 8-20 caratteri, avere almeno una lettera " +
+                    "maiuscola ed una minuscola, contenere almeno un carattere tra @#$%! ");
+        }
         byte[] userPasswordBytes = userPassword.getBytes();
 
         // Configure the hasher
@@ -22,7 +26,16 @@ public class PasswordHashing {
         return argonHasher.password(userPasswordBytes).encodedHash();
     }
 
-    private Boolean isValidPassword(String password) {
+    public Boolean verifyEncryptedPassword(String encryptedPassword, String insertedPassword) {
+        Verifier verifier = jargon2Verifier();
+        byte[] userPasswordBytes = new byte[]{};
+        if (insertedPassword != null) {
+            userPasswordBytes = insertedPassword.getBytes();
+        }
+        return verifier.hash(encryptedPassword).password(userPasswordBytes).verifyEncoded();
+    }
+
+    private Boolean isValidString(String password) {
         String regex = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%!]).{8,20}$";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(password);

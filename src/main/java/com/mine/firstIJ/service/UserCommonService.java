@@ -5,6 +5,7 @@ import com.mine.firstIJ.events.UserIdEvent;
 import com.mine.firstIJ.repository.UserCommonRepository;
 import com.mine.firstIJ.repository.entity.UserCommon;
 import com.mine.firstIJ.repository.entity.UserCommonId;
+import com.mine.firstIJ.security.PasswordHashing;
 import com.mine.firstIJ.util.UserCommonConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import java.util.UUID;
 @Service
 public class UserCommonService {
     private UserCommonConverter userCommonConverter = new UserCommonConverter();
+    private PasswordHashing passwordHashing = new PasswordHashing();
     @Autowired
     private UserCommonRepository userCommonRepository;
 
@@ -23,14 +25,16 @@ public class UserCommonService {
         return userCommons;
     }
 
-    public void insertNewUser(UserEvent userEvent) {
+    public void insertNewUser(UserEvent userEvent) throws IllegalArgumentException {
         List<UserCommon> commonUser = userCommonRepository.findTopByOrderByIdDesc();
         List<UserCommon> commonUsernames = userCommonRepository.findByUsername(userEvent.getUsername());
         if (userEvent != null && commonUsernames.isEmpty()) {
             String uniqueCommonUserId = UUID.randomUUID().toString();
             String commonUserId = uniqueCommonUserId;
-            //String commonUserPassword = jwtService.generateToken(userEvent.getPassword());
-            userCommonRepository.save(userCommonConverter.eventToUserCommonEntity(userEvent, commonUserId, ""));
+            String commonUserPassword = passwordHashing.encryptPassword(userEvent.getPassword());
+            userCommonRepository.save(userCommonConverter.eventToUserCommonEntity(userEvent, commonUserId, commonUserPassword));
+        } else if (!commonUsernames.isEmpty()) {
+            throw new IllegalArgumentException("Username già utilizzata, sceglierne un'altra ");
         }
     }
 
@@ -38,10 +42,13 @@ public class UserCommonService {
         List<UserCommon> commonUsers = userCommonRepository.findByUsername(userEvent.getUsername());
         if (!commonUsers.isEmpty()) {
             UserCommon commonUser = commonUsers.get(0);
-            if (commonUser != null) {
-                String commonUserId = commonUser.getId();
-                //String commonUserPassword = commonUser.getPasswordToken();
-                userCommonRepository.save(userCommonConverter.eventToUserCommonEntity(userEvent, commonUserId, ""));
+            String commonUserId = commonUser.getId();
+            String commonUserPassword = commonUser.getPasswordEncrypted();
+            Boolean isCorrectPassword = passwordHashing.verifyEncryptedPassword(commonUser.getPasswordEncrypted(), userEvent.getPassword());
+            if (isCorrectPassword) {
+                userCommonRepository.save(userCommonConverter.eventToUserCommonEntity(userEvent, commonUserId, commonUser.getPasswordEncrypted()));
+            } else if (isCorrectPassword == false) {
+                throw new IllegalArgumentException("Password non corretta ");
             }
         }
     }

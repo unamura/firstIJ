@@ -24,5 +24,5 @@ public class UserCommon {
     @Column(name = "user_email")
     private String userEmail;
     @Column(name = "password_token")
-    private String passwordToken;
+    private String passwordEncrypted;
 }

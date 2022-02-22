@@ -11,14 +11,14 @@ public class PasswordHashTest {
     @Test
     public void generateHashPassword() {
         String myPassword = "primaApp";
-        String passwordHash = passwordHashing.encodePassword(myPassword);
+        String passwordHash = passwordHashing.encryptPassword(myPassword);
         Assertions.assertNotNull(passwordHash);
     }
 
     @Test
     public void verifyHashPasswordGenerated() {
         String myPassword = "primaApp";
-        String passwordHash = passwordHashing.encodePassword(myPassword);
+        String passwordHash = passwordHashing.encryptPassword(myPassword);
         Assertions.assertNotNull(passwordHash);
         // Just get a hold on the verifier. No special configuration needed
         Verifier verifier = jargon2Verifier();
