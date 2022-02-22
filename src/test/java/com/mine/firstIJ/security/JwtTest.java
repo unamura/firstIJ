@@ -14,14 +14,14 @@ public class JwtTest {
     @Test
     public void passwordNotValidTest() {
         String passwordHeader = "myPass";
-        String tokenGenerated = jwtService.generateToken(passwordHeader);
+        String tokenGenerated = jwtService.generateToken();
         assertNotNull(tokenGenerated);
     }
 
     @Test
     public void passwordValidTest() {
         String passwordHeader = "Password8!";
-        String tokenGenerated = jwtService.generateToken(passwordHeader);
+        String tokenGenerated = jwtService.generateToken();
         assertNotNull(tokenGenerated);
     }
 }
