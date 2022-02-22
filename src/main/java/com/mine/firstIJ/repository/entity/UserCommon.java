@@ -13,7 +13,7 @@ public class UserCommon {
     @Id
     //@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Integer id;
+    private String id;
     @Id
     @Column(name = "username")
     private String username;
@@ -23,4 +23,6 @@ public class UserCommon {
     private String lastName;
     @Column(name = "user_email")
     private String userEmail;
+    @Column(name = "password_token")
+    private String passwordToken;
 }

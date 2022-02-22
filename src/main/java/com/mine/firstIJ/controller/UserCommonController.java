@@ -1,6 +1,7 @@
 package com.mine.firstIJ.controller;
 
 import com.mine.firstIJ.events.UserEvent;
+import com.mine.firstIJ.events.UserIdEvent;
 import com.mine.firstIJ.repository.entity.UserCommon;
 import com.mine.firstIJ.service.UserCommonService;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -18,7 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/welcome")
 @ApiResponses(value = {
-        @ApiResponse(responseCode = "500", description = "Errore nell'esecuzione del metodo", content = {
+        @ApiResponse(responseCode = "500", description = "Error during method's execution", content = {
                 @Content(mediaType = "application/json")})
 })
 @Slf4j
@@ -50,6 +51,16 @@ public class UserCommonController {
     public void updateUser(@RequestBody UserEvent userEvent) {
         try {
             userCommonService.updateUser(userEvent);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            throw e;
+        }
+    }
+
+    @PostMapping(value = "/delete_user", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    public void deleteUser(@RequestBody UserIdEvent userId) {
+        try {
+            userCommonService.deleteUser(userId);
         } catch (Exception e) {
             log.error(e.getMessage());
             throw e;

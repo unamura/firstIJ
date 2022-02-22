@@ -12,6 +12,6 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserCommonId implements Serializable {
-    private Integer id;
+    private String id;
     private String username;
 }
