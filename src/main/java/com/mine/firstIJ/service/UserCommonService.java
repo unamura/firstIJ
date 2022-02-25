@@ -20,13 +20,20 @@ public class UserCommonService {
     @Autowired
     private UserCommonRepository userCommonRepository;
 
+    public UserCommonService() {
+    }
+
+    public UserCommonService(UserCommonRepository userCommonRepository, PasswordHashing passwordHashing) {
+        this.userCommonRepository = userCommonRepository;
+        this.passwordHashing = passwordHashing;
+    }
+
     public List<UserCommon> getAllUsers() {
         List<UserCommon> userCommons = userCommonRepository.findAll();
         return userCommons;
     }
 
     public void insertNewUser(UserEvent userEvent) throws IllegalArgumentException {
-        List<UserCommon> commonUser = userCommonRepository.findTopByOrderByIdDesc();
         List<UserCommon> commonUsernames = userCommonRepository.findByUsername(userEvent.getUsername());
         if (userEvent != null && commonUsernames.isEmpty()) {
             String uniqueCommonUserId = UUID.randomUUID().toString();
@@ -43,11 +50,10 @@ public class UserCommonService {
         if (!commonUsers.isEmpty()) {
             UserCommon commonUser = commonUsers.get(0);
             String commonUserId = commonUser.getId();
-            String commonUserPassword = commonUser.getPasswordEncrypted();
             Boolean isCorrectPassword = passwordHashing.verifyEncryptedPassword(commonUser.getPasswordEncrypted(), userEvent.getPassword());
             if (isCorrectPassword) {
                 userCommonRepository.save(userCommonConverter.eventToUserCommonEntity(userEvent, commonUserId, commonUser.getPasswordEncrypted()));
-            } else if (isCorrectPassword == false) {
+            } else {
                 throw new IllegalArgumentException("Password non corretta ");
             }
         }

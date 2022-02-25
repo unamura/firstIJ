@@ -8,6 +8,9 @@ import static com.kosprov.jargon2.api.Jargon2.*;
 public class PasswordHashing {
 
     public String encryptPassword(String userPassword) {
+        if (userPassword == null) {
+            throw new IllegalArgumentException("Password non deve essere null");
+        }
         if (!isValidString(userPassword)) {
             throw new IllegalArgumentException("Password deve essere lunga 8-20 caratteri, avere almeno una lettera " +
                     "maiuscola ed una minuscola, contenere almeno un carattere tra @#$%! ");
@@ -27,12 +30,13 @@ public class PasswordHashing {
     }
 
     public Boolean verifyEncryptedPassword(String encryptedPassword, String insertedPassword) {
+        Boolean result = false;
         Verifier verifier = jargon2Verifier();
-        byte[] userPasswordBytes = new byte[]{};
         if (insertedPassword != null) {
-            userPasswordBytes = insertedPassword.getBytes();
+            byte[] userPasswordBytes = insertedPassword.getBytes();
+            result = verifier.hash(encryptedPassword).password(userPasswordBytes).verifyEncoded();
         }
-        return verifier.hash(encryptedPassword).password(userPasswordBytes).verifyEncoded();
+        return result;
     }
 
     private Boolean isValidString(String password) {
